@@ -15,7 +15,7 @@
 		A10000060000000000000001 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000060000000000000001 /* LoginView.swift */; };
 		A10000070000000000000001 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000070000000000000001 /* SignUpView.swift */; };
 		A10000080000000000000001 /* TaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000080000000000000001 /* TaskListView.swift */; };
-		A100000B0000000000000001 /* FirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000B0000000000000001 /* FirebaseService.swift */; };
+		A100000B0000000000000001 /* TaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000B0000000000000001 /* TaskService.swift */; };
 		A100000D0000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A200000D0000000000000001 /* Assets.xcassets */; };
 		A100000E0000000000000001 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A200000E0000000000000001 /* Preview Assets.xcassets */; };
 		A100000F0000000000000001 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A200000F0000000000000001 /* GoogleService-Info.plist */; };
@@ -33,7 +33,7 @@
 		A20000060000000000000001 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		A20000070000000000000001 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		A20000080000000000000001 /* TaskListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListView.swift; sourceTree = "<group>"; };
-		A200000B0000000000000001 /* FirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseService.swift; sourceTree = "<group>"; };
+		A200000B0000000000000001 /* TaskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskService.swift; sourceTree = "<group>"; };
 		A200000D0000000000000001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A200000E0000000000000001 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A200000F0000000000000001 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -130,7 +130,7 @@
 		A40000080000000000000001 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				A200000B0000000000000001 /* FirebaseService.swift */,
+				A200000B0000000000000001 /* TaskService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -237,7 +237,7 @@
 				A10000060000000000000001 /* LoginView.swift in Sources */,
 				A10000070000000000000001 /* SignUpView.swift in Sources */,
 				A10000080000000000000001 /* TaskListView.swift in Sources */,
-				A100000B0000000000000001 /* FirebaseService.swift in Sources */,
+				A100000B0000000000000001 /* TaskService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

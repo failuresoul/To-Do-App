@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" width="100%" height="100%" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="viewGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+    <linearGradient id="vmGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#5b21b6"/>
+    </linearGradient>
+    <linearGradient id="serviceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0d9488"/>
+      <stop offset="100%" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="firebaseGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ea580c"/>
+      <stop offset="100%" stop-color="#c2410c"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#94a3b8"/>
+    </marker>
+    <marker id="arrowOrange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#fb923c"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="620" rx="20" fill="url(#bgGrad)"/>
+
+  <!-- Header -->
+  <text x="600" y="48" text-anchor="middle" fill="#f8fafc" font-size="26" font-weight="700">TodoFirebaseApp — MVVM + Firebase System Architecture</text>
+  <text x="600" y="74" text-anchor="middle" fill="#94a3b8" font-size="14">iOS 17+ • SwiftUI • Swift Concurrency (@MainActor / async-await) • Firebase Auth &amp; Cloud Firestore</text>
+
+  <!-- Column 1: SwiftUI Views -->
+  <rect x="40" y="105" width="250" height="475" rx="14" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+  <rect x="40" y="105" width="250" height="46" rx="14" fill="url(#viewGrad)"/>
+  <text x="165" y="134" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="700">1. View Layer (SwiftUI)</text>
+
+  <rect x="60" y="170" width="210" height="52" rx="8" fill="#0f172a" stroke="#334155"/>
+  <text x="165" y="193" text-anchor="middle" fill="#38bdf8" font-size="14" font-weight="600">TodoFirebaseAppApp</text>
+  <text x="165" y="211" text-anchor="middle" fill="#94a3b8" font-size="11">@main • FirebaseApp.configure()</text>
+
+  <rect x="60" y="235" width="210" height="52" rx="8" fill="#0f172a" stroke="#334155"/>
+  <text x="165" y="258" text-anchor="middle" fill="#38bdf8" font-size="14" font-weight="600">ContentView</text>
+  <text x="165" y="276" text-anchor="middle" fill="#94a3b8" font-size="11">Session Router (Auth vs Tasks)</text>
+
+  <rect x="60" y="302" width="210" height="72" rx="8" fill="#0f172a" stroke="#334155"/>
+  <text x="165" y="325" text-anchor="middle" fill="#7dd3fc" font-size="14" font-weight="600">Auth Views</text>
+  <text x="165" y="344" text-anchor="middle" fill="#cbd5e1" font-size="12">LoginView.swift</text>
+  <text x="165" y="361" text-anchor="middle" fill="#cbd5e1" font-size="12">SignUpView.swift</text>
+
+  <rect x="60" y="390" width="210" height="95" rx="8" fill="#0f172a" stroke="#334155"/>
+  <text x="165" y="413" text-anchor="middle" fill="#7dd3fc" font-size="14" font-weight="600">Task Views</text>
+  <text x="165" y="432" text-anchor="middle" fill="#cbd5e1" font-size="12">TaskListView.swift</text>
+  <text x="165" y="450" text-anchor="middle" fill="#cbd5e1" font-size="12">TaskRowView.swift</text>
+  <text x="165" y="468" text-anchor="middle" fill="#cbd5e1" font-size="12">AddEditTaskView.swift</text>
+
+  <rect x="60" y="502" width="210" height="56" rx="8" fill="#0f172a" stroke="#334155"/>
+  <text x="165" y="525" text-anchor="middle" fill="#e2e8f0" font-size="12" font-weight="600">State Binding</text>
+  <text x="165" y="544" text-anchor="middle" fill="#94a3b8" font-size="11">@EnvironmentObject • @StateObject</text>
+
+  <!-- Column 2: ViewModel Layer -->
+  <rect x="345" y="105" width="250" height="475" rx="14" fill="#1e293b" stroke="#a78bfa" stroke-width="2"/>
+  <rect x="345" y="105" width="250" height="46" rx="14" fill="url(#vmGrad)"/>
+  <text x="470" y="134" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="700">2. ViewModel Layer</text>
+
+  <rect x="365" y="185" width="210" height="165" rx="10" fill="#0f172a" stroke="#4c1d95"/>
+  <text x="470" y="210" text-anchor="middle" fill="#c4b5fd" font-size="15" font-weight="700">AuthViewModel</text>
+  <text x="470" y="228" text-anchor="middle" fill="#94a3b8" font-size="11">@MainActor ObservableObject</text>
+  <line x1="380" y1="238" x2="560" y2="238" stroke="#334155"/>
+  <text x="380" y="258" fill="#e2e8f0" font-size="12">• userSession: User?</text>
+  <text x="380" y="276" fill="#e2e8f0" font-size="12">• signIn(email:password:)</text>
+  <text x="380" y="294" fill="#e2e8f0" font-size="12">• signUp(email:password:fullName:)</text>
+  <text x="380" y="312" fill="#e2e8f0" font-size="12">• resetPassword(email:)</text>
+  <text x="380" y="330" fill="#e2e8f0" font-size="12">• signOut()</text>
+
+  <rect x="365" y="375" width="210" height="180" rx="10" fill="#0f172a" stroke="#4c1d95"/>
+  <text x="470" y="400" text-anchor="middle" fill="#c4b5fd" font-size="15" font-weight="700">TaskViewModel</text>
+  <text x="470" y="418" text-anchor="middle" fill="#94a3b8" font-size="11">@MainActor ObservableObject</text>
+  <line x1="380" y1="428" x2="560" y2="428" stroke="#334155"/>
+  <text x="380" y="448" fill="#e2e8f0" font-size="12">• tasks: [TodoItem]</text>
+  <text x="380" y="466" fill="#e2e8f0" font-size="12">• filter: .all | .active | .completed</text>
+  <text x="380" y="484" fill="#e2e8f0" font-size="12">• searchText / filteredTasks</text>
+  <text x="380" y="502" fill="#e2e8f0" font-size="12">• startListening() / stopListening()</text>
+  <text x="380" y="520" fill="#e2e8f0" font-size="12">• add / update / toggle / delete</text>
+
+  <!-- Column 3: Service & Model Layer -->
+  <rect x="650" y="105" width="235" height="475" rx="14" fill="#1e293b" stroke="#2dd4bf" stroke-width="2"/>
+  <rect x="650" y="105" width="235" height="46" rx="14" fill="url(#serviceGrad)"/>
+  <text x="767" y="134" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="700">3. Service &amp; Models</text>
+
+  <rect x="668" y="185" width="200" height="185" rx="10" fill="#0f172a" stroke="#115e59"/>
+  <text x="768" y="210" text-anchor="middle" fill="#5eead4" font-size="15" font-weight="700">TaskService</text>
+  <text x="768" y="228" text-anchor="middle" fill="#94a3b8" font-size="11">Singleton (.shared)</text>
+  <line x1="682" y1="238" x2="852" y2="238" stroke="#334155"/>
+  <text x="682" y="258" fill="#e2e8f0" font-size="12">• Guard currentUser?.uid</text>
+  <text x="682" y="276" fill="#e2e8f0" font-size="12">• whereField("userId", == uid)</text>
+  <text x="682" y="294" fill="#e2e8f0" font-size="12">• listenToTasks() Snapshot</text>
+  <text x="682" y="312" fill="#e2e8f0" font-size="12">• addTask() / updateTask()</text>
+  <text x="682" y="330" fill="#e2e8f0" font-size="12">• toggleTaskCompletion()</text>
+  <text x="682" y="348" fill="#e2e8f0" font-size="12">• deleteTask()</text>
+
+  <rect x="668" y="390" width="200" height="165" rx="10" fill="#0f172a" stroke="#115e59"/>
+  <text x="768" y="415" text-anchor="middle" fill="#5eead4" font-size="15" font-weight="700">TodoItem &amp; Priority</text>
+  <text x="768" y="433" text-anchor="middle" fill="#94a3b8" font-size="11">Codable • Identifiable • Equatable</text>
+  <line x1="682" y1="443" x2="852" y2="443" stroke="#334155"/>
+  <text x="682" y="462" fill="#e2e8f0" font-size="12">• @DocumentID id: String?</text>
+  <text x="682" y="480" fill="#e2e8f0" font-size="12">• userId: String</text>
+  <text x="682" y="498" fill="#e2e8f0" font-size="12">• title, notes, isCompleted</text>
+  <text x="682" y="516" fill="#e2e8f0" font-size="12">• priority: Low | Medium | High</text>
+  <text x="682" y="534" fill="#e2e8f0" font-size="12">• dueDate: Date?, createdAt</text>
+
+  <!-- Column 4: Firebase Backend -->
+  <rect x="940" y="105" width="220" height="475" rx="14" fill="#1e293b" stroke="#fb923c" stroke-width="2"/>
+  <rect x="940" y="105" width="220" height="46" rx="14" fill="url(#firebaseGrad)"/>
+  <text x="1050" y="134" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="700">4. Firebase Cloud</text>
+
+  <rect x="958" y="185" width="184" height="125" rx="10" fill="#0f172a" stroke="#9a3412"/>
+  <text x="1050" y="210" text-anchor="middle" fill="#fdba74" font-size="15" font-weight="700">Firebase Auth</text>
+  <line x1="972" y1="222" x2="1128" y2="222" stroke="#334155"/>
+  <text x="972" y="244" fill="#e2e8f0" font-size="12">• Email &amp; Password</text>
+  <text x="972" y="264" fill="#e2e8f0" font-size="12">• Session Listener</text>
+  <text x="972" y="284" fill="#e2e8f0" font-size="12">• Password Reset Email</text>
+
+  <rect x="958" y="330" width="184" height="135" rx="10" fill="#0f172a" stroke="#9a3412"/>
+  <text x="1050" y="355" text-anchor="middle" fill="#fdba74" font-size="15" font-weight="700">Cloud Firestore</text>
+  <line x1="972" y1="367" x2="1128" y2="367" stroke="#334155"/>
+  <text x="972" y="389" fill="#e2e8f0" font-size="12">• /users/{userId}</text>
+  <text x="972" y="409" fill="#e2e8f0" font-size="12">• /tasks/{taskId}</text>
+  <text x="972" y="429" fill="#e2e8f0" font-size="12">• Real-Time Snapshots</text>
+  <text x="972" y="449" fill="#e2e8f0" font-size="12">• Offline Persistence</text>
+
+  <rect x="958" y="482" width="184" height="75" rx="10" fill="#0f172a" stroke="#9a3412"/>
+  <text x="1050" y="505" text-anchor="middle" fill="#fde047" font-size="13" font-weight="700">Security Rules</text>
+  <text x="1050" y="525" text-anchor="middle" fill="#cbd5e1" font-size="11">request.auth.uid ==</text>
+  <text x="1050" y="542" text-anchor="middle" fill="#cbd5e1" font-size="11">resource.data.userId</text>
+
+  <!-- Connectors -->
+  <line x1="290" y1="265" x2="343" y2="265" stroke="#94a3b8" stroke-width="2.2" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+  <line x1="290" y1="450" x2="343" y2="450" stroke="#94a3b8" stroke-width="2.2" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+  <line x1="595" y1="460" x2="648" y2="310" stroke="#94a3b8" stroke-width="2.2" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+  <line x1="595" y1="245" x2="938" y2="245" stroke="#fb923c" stroke-width="2.2" stroke-dasharray="6,4" marker-end="url(#arrowOrange)" marker-start="url(#arrowOrange)"/>
+  <line x1="885" y1="300" x2="938" y2="385" stroke="#fb923c" stroke-width="2.2" marker-end="url(#arrowOrange)" marker-start="url(#arrowOrange)"/>
+</svg>

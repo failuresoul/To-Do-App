@@ -8,192 +8,182 @@
   <img src="https://img.shields.io/badge/IDE-Xcode%2016-147EFB?style=for-the-badge&logo=xcode&logoColor=white" alt="Xcode 16" />
 </p>
 
-**TodoFirebaseApp** is a native iOS task management application built with **SwiftUI** and **Google Firebase** (`FirebaseAuth` and `FirebaseFirestore`). It follows the **MVVM (Model–View–ViewModel)** pattern using modern Swift Concurrency (`async`/`await` and `@MainActor`) and enforces strict **per-user data isolation** both on the client and via Cloud Firestore Security Rules.
+## 📖 Overview
+
+**TodoFirebaseApp** is a native iOS task management application built with **SwiftUI** and **Google Firebase** (`FirebaseAuth` and `FirebaseFirestore`). The app allows users to create an account, sign in securely, and manage their personal daily tasks in real time.
+
+Every task is tied to the logged-in user's unique Firebase `uid`, ensuring that each user can only view, create, edit, complete, or delete their own tasks.
 
 ---
 
-## ✨ Key Features
+## 📑 Table of Contents
 
-- 🔐 **Email & Password Authentication (`FirebaseAuth`)**
-  - User registration with Full Name, Email, and Password validation.
-  - Persistent session state listener (`addStateDidChangeListener`) that automatically routes between `LoginView` and `TaskListView`.
-  - Built-in **Forgot Password?** email reset flow.
-- ☁️ **Real-Time Cloud Sync (`FirebaseFirestore`)**
-  - Live Firestore snapshot listener (`addSnapshotListener`) updates the UI immediately whenever tasks are added, edited, completed, or deleted.
-  - Automatic user profile creation under `/users/{uid}` upon sign-up.
-- 🛡️ **Strict Per-User Data Isolation**
-  - Every task document stores its owner's `userId`.
-  - Client-side queries filter strictly by `.whereField("userId", isEqualTo: uid)`, and server-side `firestore.rules` verify `request.auth.uid == resource.data.userId`.
-- ✅ **Rich Task Management UI**
-  - Create and edit tasks with **Title**, **Notes**, **Priority** (`Low`, `Medium`, `High`), and optional **Due Date**.
-  - Segmented filter bar (**All**, **Active**, **Completed**) and real-time search bar (`.searchable`).
-  - One-tap completion toggle with strikethrough styling, color-coded priority pills, overdue date highlighting, and swipe-to-delete / swipe-to-edit actions.
+1. [System Architecture](#-1-system-architecture)
+2. [How the App Works (Layer-by-Layer Description)](#-2-how-the-app-works-layer-by-layer-description)
+3. [Core Features](#-3-core-features)
+4. [Database Design & Security Rules](#-4-database-design--security-rules)
+5. [Project Folder & File Structure](#-5-project-folder--file-structure)
+6. [App Screenshots & Firebase Verification](#-6-app-screenshots--firebase-verification)
+7. [How to Set Up & Run in Xcode](#-7-how-to-set-up--run-in-xcode)
+8. [Author](#-8-author)
 
 ---
 
-## 📸 App Screenshots
+## 🏗️ 1. System Architecture
 
-### Authentication & Task Creation
-| Sign In Screen (`LoginView`) | Create / Edit Task Sheet (`AddEditTaskView`) |
-| :---: | :---: |
-| <img src="docs/images/login-screen.jpg" width="300" alt="Login Screen" /> | <img src="docs/images/new-task-sheet.jpg" width="300" alt="New Task Sheet" /> |
+The project uses the **MVVM (Model–View–ViewModel)** architecture combined with a dedicated **Service Layer** and **Firebase Cloud Backend**. This keeps the user interface clean and separates UI code from Firebase database logic.
 
-### Real-Time Task List & Filtering (`All` • `Active` • `Completed`)
-| All Tasks | Active Tasks | Completed Tasks |
-| :---: | :---: | :---: |
-| <img src="docs/images/tasks-all.jpg" width="260" alt="All Tasks" /> | <img src="docs/images/tasks-active.jpg" width="260" alt="Active Tasks" /> | <img src="docs/images/tasks-completed.jpg" width="260" alt="Completed Tasks" /> |
-
-### Cloud Firestore Backend Verification
-| `/users/{userId}` Collection | `/tasks/{taskId}` Collection (User-Scoped) |
-| :---: | :---: |
-| <img src="docs/images/firestore-users.png" width="450" alt="Firestore Users Collection" /> | <img src="docs/images/firestore-tasks.png" width="450" alt="Firestore Tasks Collection" /> |
-
----
-
-## 🏗️ System Architecture
+### Visual Architecture Overview
 
 <p align="center">
   <img src="docs/images/architecture-banner.jpg" width="100%" alt="TodoFirebaseApp System Architecture Banner" />
 </p>
 
-<details>
-<summary><b>🔍 View Vector SVG Architecture Diagram</b></summary>
-<br />
-<p align="center">
-  <img src="docs/images/architecture-diagram.svg" width="100%" alt="TodoFirebaseApp Vector Architecture Diagram" />
-</p>
-</details>
+### Detailed Layer Diagram
 
-### Architectural Flow (Mermaid Diagram)
+<p align="center">
+  <img src="docs/images/architecture-diagram.svg" width="100%" alt="TodoFirebaseApp Detailed Architecture Diagram" />
+</p>
+
+### Data Flow Diagram
 
 ```mermaid
 flowchart LR
-    subgraph UI["1. View Layer (SwiftUI)"]
-        App["TodoFirebaseAppApp\n(@main + AppDelegate)"]
-        Content["ContentView\n(Session Router)"]
-        AuthUI["LoginView & SignUpView"]
-        TaskUI["TaskListView\nTaskRowView\nAddEditTaskView"]
+    subgraph View["1. View Layer (SwiftUI)"]
+        App["TodoFirebaseAppApp"] --> Content["ContentView"]
+        Content -->|Logged Out| AuthViews["LoginView / SignUpView"]
+        Content -->|Logged In| TaskViews["TaskListView / TaskRowView / AddEditTaskView"]
     end
 
-    subgraph VM["2. ViewModel Layer (@MainActor)"]
-        AuthVM["AuthViewModel\n(userSession, signIn, signUp,\nsignOut, resetPassword)"]
-        TaskVM["TaskViewModel\n(tasks, filter, searchText,\nfilteredTasks, CRUD)"]
+    subgraph ViewModel["2. ViewModel Layer"]
+        AuthVM["AuthViewModel"]
+        TaskVM["TaskViewModel"]
     end
 
-    subgraph Data["3. Service & Model Layer"]
-        Service["TaskService.shared\n(ListenerRegistration & CRUD)"]
-        Model["TodoItem & Priority\n(@DocumentID, Codable)"]
+    subgraph Service["3. Service & Model Layer"]
+        TS["TaskService"]
+        Model["TodoItem Model"]
     end
 
-    subgraph Cloud["4. Firebase Backend"]
-        FAuth["Firebase Authentication\n(Email / Password)"]
-        FS["Cloud Firestore\n(/users/{uid} & /tasks/{taskId})"]
-        Rules["Firestore Security Rules\n(request.auth.uid == userId)"]
+    subgraph Firebase["4. Firebase Cloud"]
+        FA["Firebase Auth"]
+        FS["Cloud Firestore"]
     end
 
-    App --> Content
-    Content -->|Unauthenticated| AuthUI
-    Content -->|Authenticated| TaskUI
-    AuthUI <--> AuthVM
-    TaskUI <--> TaskVM
-    AuthVM <--> FAuth
-    AuthVM -->|Save Profile| FS
-    TaskVM <--> Service
-    Service --> Model
-    Service <-->|Snapshot + CRUD| FS
-    FS --- Rules
-```
-
-### Authentication & Real-Time Firestore Sequence
-
-```mermaid
-sequenceDiagram
-    actor User
-    participant View as SwiftUI Views
-    participant AuthVM as AuthViewModel
-    participant TaskVM as TaskViewModel
-    participant Service as TaskService
-    participant Firebase as Firebase Auth & Firestore
-
-    User->>View: Enter Email & Password
-    View->>AuthVM: signIn(email, password)
-    AuthVM->>Firebase: Auth.auth().signIn(...)
-    Firebase-->>AuthVM: AuthStateDidChangeListener fires (userSession != nil)
-    AuthVM-->>View: ContentView routes to TaskListView
-    View->>TaskVM: onAppear -> startListening()
-    TaskVM->>Service: listenToTasks()
-    Service->>Firebase: db.collection("tasks").whereField("userId", isEqualTo: uid)
-    Firebase-->>Service: Real-time QuerySnapshot
-    Service-->>TaskVM: Decoded [TodoItem] sorted by createdAt
-    TaskVM-->>View: Re-renders filteredTasks list
+    AuthViews <--> AuthVM
+    TaskViews <--> TaskVM
+    AuthVM <--> FA
+    AuthVM -->|Create User Profile| FS
+    TaskVM <--> TS
+    TS --> Model
+    TS <-->|Real-Time Listener & CRUD| FS
 ```
 
 ---
 
-## 📂 Project Directory Structure
+## 🧩 2. How the App Works (Layer-by-Layer Description)
 
-```text
-To-Do-App/
-├── .gitattributes                         # Enforces Unix LF line endings across Windows & macOS
-├── .gitignore                             # Standard Xcode & SwiftPM ignore rules
-├── firestore.rules                        # Production per-user Cloud Firestore security rules
-├── docs/
-│   └── images/                            # App screenshots & architecture diagrams
-├── TodoFirebaseApp.xcodeproj/             # Native Xcode 16 project bundle
-│   ├── project.pbxproj
-│   └── project.xcworkspace/
-└── TodoFirebaseApp/
-    ├── App/
-    │   └── TodoFirebaseAppApp.swift       # @main entry point & FirebaseApp.configure()
-    ├── ContentView.swift                  # Root view switching between LoginView & TaskListView
-    ├── Models/
-    │   └── TodoItem.swift                 # TodoItem struct (@DocumentID) & Priority enum
-    ├── ViewModels/
-    │   ├── AuthViewModel.swift            # Firebase Auth state & user session management
-    │   └── TaskViewModel.swift            # Task state, search, filtering & CRUD actions
-    ├── Views/
-    │   ├── Auth/
-    │   │   ├── LoginView.swift            # Email/Password login & password reset alert
-    │   │   └── SignUpView.swift           # Account creation with form validation
-    │   └── Tasks/
-    │       ├── TaskListView.swift         # Main task list, filter picker, search & sheets
-    │       ├── TaskRowView.swift          # Task row with checkbox, priority badge & due date
-    │       └── AddEditTaskView.swift      # Form sheet for adding and editing tasks
-    ├── Services/
-    │   └── TaskService.swift              # User-scoped Firestore listener & CRUD operations
-    ├── Assets.xcassets/                   # AppIcon and AccentColor catalogs
-    ├── Preview Content/                   # Preview Assets catalog
-    └── GoogleService-Info.plist           # Firebase iOS configuration file
-```
+### Layer 1: View Layer (`SwiftUI`)
+The View Layer only handles what the user sees on screen and sends button taps to the ViewModels:
+- **`TodoFirebaseAppApp.swift`**: The main entry point (`@main`) of the app. It initializes Firebase using `FirebaseApp.configure()` and creates a shared `AuthViewModel` for the entire app.
+- **`ContentView.swift`**: Acts as the session router. It checks `authViewModel.userSession`:
+  - If no user is signed in (`nil`), it shows **`LoginView`**.
+  - If a user is signed in, it automatically transitions to **`TaskListView`**.
+- **`LoginView.swift` & `SignUpView.swift`**: Clean iOS forms for signing in, registering a new account with password validation, and sending password reset emails.
+- **`TaskListView.swift`**: Displays the segmented filter bar (`All`, `Active`, `Completed`), the search bar, the list of tasks, empty-state messages, a `Sign Out` button, and a `+` button to add new tasks.
+- **`TaskRowView.swift`**: Displays a single task row with a completion checkbox button, task title (with strikethrough when completed), notes preview, color-coded priority badge (`Low`, `Medium`, `High`), and formatted due date.
+- **`AddEditTaskView.swift`**: A sheet form used both for creating a new task and editing an existing task.
 
 ---
 
-## 🔒 Data Model & Security Rules
+### Layer 2: ViewModel Layer (`@MainActor ObservableObject`)
+The ViewModels hold the screen state (`@Published` properties) and connect the UI to Firebase:
+- **`AuthViewModel.swift`**:
+  - Listens to Firebase's authentication state using `Auth.auth().addStateDidChangeListener`.
+  - Provides `signIn(email:password:)`, `signUp(email:password:fullName:)`, `resetPassword(email:)`, and `signOut()`.
+  - When a new user signs up, it also saves their profile document (`uid`, `fullName`, `email`, `createdAt`) inside the Firestore `users` collection.
+- **`TaskViewModel.swift`**:
+  - Stores the live array of `tasks: [TodoItem]`, the active `filter` (`All`, `Active`, `Completed`), and `searchText`.
+  - Computes `filteredTasks` automatically whenever the user switches tabs or types in the search bar.
+  - Calls `TaskService` to start/stop the real-time listener and perform add, update, toggle completion, and delete actions.
 
-### `TodoItem` Schema (`tasks` Collection)
+---
 
-| Field | Type | Description |
+### Layer 3: Service & Model Layer (`Services/` & `Models/`)
+- **`TodoItem.swift`**:
+  - Defines the `TodoItem` struct conforming to `Identifiable`, `Codable`, and `Equatable`.
+  - Uses `@DocumentID var id: String?` so Firestore automatically maps each document's ID.
+  - Defines the `Priority` enum (`Low`, `Medium`, `High`).
+- **`TaskService.swift`**:
+  - Handles all communication with the Firestore `"tasks"` collection.
+  - Checks `guard let uid = Auth.auth().currentUser?.uid else { return }` before every request.
+  - Queries only tasks belonging to the current user: `.whereField("userId", isEqualTo: uid)`.
+  - Uses `addSnapshotListener` so any change in Firestore immediately updates the app UI in real time.
+
+---
+
+### Layer 4: Firebase Cloud Backend
+- **Firebase Authentication**: Manages user accounts, password hashing, session tokens, and password reset emails.
+- **Cloud Firestore**: NoSQL cloud database storing two collections:
+  1. `users`: Stores user profile details indexed by `uid`.
+  2. `tasks`: Stores all to-do items with a `userId` field linking each task to its owner.
+
+---
+
+## ✨ 3. Core Features
+
+| Feature | Description |
+| :--- | :--- |
+| **User Authentication** | Sign up with Full Name, Email, and Password (6+ character check & password confirmation). |
+| **Persistent Session** | Users stay logged in across app restarts until they tap **Sign Out**. |
+| **Password Recovery** | **Forgot Password?** alert sends a reset link directly to the user's email. |
+| **Create & Edit Tasks** | Add a title, multi-line notes, priority level (`Low`, `Medium`, `High`), and an optional due date. |
+| **Real-Time Sync** | Tasks update live across devices via Cloud Firestore snapshot listeners. |
+| **Filter & Search** | Filter tasks by **All**, **Active**, or **Completed**, and search by title or notes. |
+| **Swipe Actions** | Swipe left on any task row to **Delete** or **Edit**, or tap the circle icon to mark complete. |
+| **User Isolation** | Users can only access their own tasks—enforced in both Swift code and Firestore Security Rules. |
+
+---
+
+## 🔒 4. Database Design & Security Rules
+
+### Collection 1: `users/{userId}`
+Created automatically when a user registers in `SignUpView`.
+
+| Field | Type | Example Value |
 | :--- | :--- | :--- |
-| `id` | `String?` (`@DocumentID`) | Auto-generated Firestore document ID |
-| `userId` | `String` | Firebase Auth `uid` of the task owner |
-| `title` | `String` | Task title (required) |
-| `notes` | `String` | Optional multi-line description |
-| `isCompleted` | `Bool` | Completion status (`true` / `false`) |
-| `priority` | `String` (`Priority`) | `"Low"`, `"Medium"`, or `"High"` |
-| `dueDate` | `Timestamp?` (`Date?`) | Optional scheduled due date |
-| `createdAt` | `Timestamp` (`Date`) | Creation timestamp used for sorting |
+| `uid` | `String` | `"0ZsYTvLoFxflYQ9cfzzb0A7th6i2"` |
+| `fullName` | `String` | `"Nurul Absar Shadik"` |
+| `email` | `String` | `"shadik2207065@gmail.com"` |
+| `createdAt` | `Timestamp` | `November 14, 2026 at 9:53:21 PM UTC+6` |
 
-### Firestore Security Rules ([firestore.rules](firestore.rules))
+### Collection 2: `tasks/{taskId}`
+Created and updated via `TaskService`.
+
+| Field | Type | Example Value |
+| :--- | :--- | :--- |
+| `title` | `String` | `"Nihal sir paper"` |
+| `notes` | `String` | `"Android project"` |
+| `isCompleted` | `Boolean` | `false` |
+| `priority` | `String` | `"High"` (`"Low"` \| `"Medium"` \| `"High"`) |
+| `dueDate` | `Timestamp?` | `November 16, 2026 at 9:53:00 PM UTC+6` |
+| `createdAt` | `Timestamp` | `November 14, 2026 at 9:53:40 PM UTC+6` |
+| `userId` | `String` | `"0ZsYTvLoFxflYQ9cfzzb0A7th6i2"` |
+
+### Firestore Security Rules (`firestore.rules`)
+These rules run on Google's servers and guarantee that a user can never read, edit, or delete another user's tasks:
 
 ```javascript
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Users can only read and write their own profile document
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
+    // Users can only read, create, update, and delete tasks where userId matches their UID
     match /tasks/{taskId} {
       allow read, update, delete: if request.auth != null
                                   && request.auth.uid == resource.data.userId;
@@ -207,39 +197,116 @@ service cloud.firestore {
 
 ---
 
-## 🚀 Getting Started
+## 📂 5. Project Folder & File Structure
 
-### Prerequisites
-- **macOS** with **Xcode 16.0+** (or Xcode 15.2+)
-- **iOS 17.0+** Simulator or physical iPhone
-- A **Firebase project** with **Email/Password Authentication** and **Cloud Firestore** enabled
-
-### Installation & Running in Xcode
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/failuresoul/To-Do-App.git
-   cd To-Do-App
-   ```
-
-2. **Configure Firebase (`GoogleService-Info.plist`):**
-   - In the [Firebase Console](https://console.firebase.google.com/), register an iOS app with Bundle ID **`com.example.TodoFirebaseApp`**.
-   - Download `GoogleService-Info.plist` and place it at `TodoFirebaseApp/GoogleService-Info.plist`.
-   - Enable **Authentication → Sign-in method → Email/Password**.
-   - Create a **Cloud Firestore** database and publish the rules from [`firestore.rules`](firestore.rules).
-
-3. **Open and Run in Xcode:**
-   ```bash
-   open TodoFirebaseApp.xcodeproj
-   ```
-   - Wait for Xcode to finish resolving Swift Package Manager dependencies (`firebase-ios-sdk`).
-   - Select an iPhone simulator (e.g., **iPhone 16**) and press **`Cmd + R`**.
-
-> 💡 **Lab Mac Tip:** If Xcode shows `Could not create workspace arena folder`, go to **Xcode → Settings → Locations → Derived Data → Advanced…** and select **Relative to Workspace** (or a custom folder in `/tmp/DerivedData`).
+```text
+To-Do-App/
+├── .gitattributes                         # Keeps Unix (LF) line endings for Xcode compatibility
+├── .gitignore                             # Ignores Xcode build artifacts and user data
+├── firestore.rules                        # Cloud Firestore security rules
+├── README.md                              # Project documentation
+├── docs/
+│   └── images/                            # Architecture diagrams and app screenshots
+├── TodoFirebaseApp.xcodeproj/             # Native Xcode 16 project configuration
+│   ├── project.pbxproj
+│   └── project.xcworkspace/
+└── TodoFirebaseApp/
+    ├── App/
+    │   └── TodoFirebaseAppApp.swift       # App entry point & FirebaseApp.configure()
+    ├── ContentView.swift                  # Switches between LoginView and TaskListView
+    ├── Models/
+    │   └── TodoItem.swift                 # TodoItem model and Priority enum
+    ├── ViewModels/
+    │   ├── AuthViewModel.swift            # Handles sign-in, sign-up, sign-out & session state
+    │   └── TaskViewModel.swift            # Manages task list, filtering, search & CRUD calls
+    ├── Views/
+    │   ├── Auth/
+    │   │   ├── LoginView.swift            # Sign-in UI and Forgot Password dialog
+    │   │   └── SignUpView.swift           # Registration UI with form validation
+    │   └── Tasks/
+    │       ├── TaskListView.swift         # Main task screen with filter tabs and search bar
+    │       ├── TaskRowView.swift          # Individual task item row with priority badge
+    │       └── AddEditTaskView.swift      # Sheet form to create or edit a task
+    ├── Services/
+    │   └── TaskService.swift              # Firestore snapshot listener and CRUD operations
+    ├── Assets.xcassets/                   # AppIcon and AccentColor assets
+    ├── Preview Content/                   # Preview assets for Xcode Canvas
+    └── GoogleService-Info.plist           # Firebase configuration file
+```
 
 ---
 
-## 👤 Author
+## 📸 6. App Screenshots & Firebase Verification
+
+### 6.1 Authentication & Creating a New Task
+- **Left (`LoginView`):** Clean sign-in screen with Email, Password, Forgot Password alert, and navigation link to Sign Up.
+- **Right (`AddEditTaskView`):** Modal sheet for adding a new task with Title, Notes, Priority selector (`Low`, `Medium`, `High`), and optional Due Date toggle.
+
+| Sign In Screen (`LoginView`) | New Task Sheet (`AddEditTaskView`) |
+| :---: | :---: |
+| <img src="docs/images/login-screen.jpg" width="320" alt="Login Screen" /> | <img src="docs/images/new-task-sheet.jpg" width="320" alt="New Task Sheet" /> |
+
+---
+
+### 6.2 Task Management & Real-Time Filtering (`All` • `Active` • `Completed`)
+- **All Tab:** Displays every task for the signed-in user, showing active tasks alongside completed tasks (with green checkmarks and strikethrough text).
+- **Active Tab:** Filters the list to show only incomplete tasks that still need attention.
+- **Completed Tab:** Filters the list to show only finished tasks.
+
+| All Tasks (`All`) | Active Tasks (`Active`) | Completed Tasks (`Completed`) |
+| :---: | :---: | :---: |
+| <img src="docs/images/tasks-all.jpg" width="270" alt="All Tasks View" /> | <img src="docs/images/tasks-active.jpg" width="270" alt="Active Tasks View" /> | <img src="docs/images/tasks-completed.jpg" width="270" alt="Completed Tasks View" /> |
+
+---
+
+### 6.3 Firebase Cloud Firestore Database Verification
+- **Users Collection (`/users`):** Shows the registered user document matching the authenticated `uid`.
+- **Tasks Collection (`/tasks`):** Shows task documents linked to the owner via the `userId` field.
+
+#### `users` Collection in Firebase Console
+<p align="center">
+  <img src="docs/images/firestore-users.png" width="90%" alt="Firestore Users Collection" />
+</p>
+
+#### `tasks` Collection in Firebase Console
+<p align="center">
+  <img src="docs/images/firestore-tasks.png" width="90%" alt="Firestore Tasks Collection" />
+</p>
+
+---
+
+## 🚀 7. How to Set Up & Run in Xcode
+
+### Step 1: Clone the Repository on macOS
+Open **Terminal** on your Mac and run:
+```bash
+git clone https://github.com/failuresoul/To-Do-App.git
+cd To-Do-App
+```
+
+### Step 2: Firebase Configuration
+1. Go to the [Firebase Console](https://console.firebase.google.com/) and create or open your Firebase project.
+2. Register an iOS app with Bundle ID **`com.example.TodoFirebaseApp`**.
+3. Download **`GoogleService-Info.plist`** and place it inside the `TodoFirebaseApp/` folder.
+4. Under **Security → Authentication → Sign-in method**, enable **Email/Password**.
+5. Under **Databases & Storage → Firestore Database**, create a database and publish the rules from [`firestore.rules`](firestore.rules).
+
+### Step 3: Open and Run in Xcode
+1. Open the project in Xcode:
+   ```bash
+   open TodoFirebaseApp.xcodeproj
+   ```
+2. Wait for Xcode to finish downloading the **Firebase Swift Packages** (`firebase-ios-sdk`).
+3. Select an iPhone simulator (such as **iPhone 16**) from the top toolbar.
+4. Press **`Cmd + R`** to build and launch the app.
+
+> 💡 **Troubleshooting on Shared/Lab Macs:**  
+> If Xcode shows `Could not create workspace arena folder`, open **Xcode → Settings → Locations → Derived Data → Advanced…** and select **Relative to Workspace** (or set a custom path such as `/tmp/DerivedData`).
+
+---
+
+## 👤 8. Author
 
 **Nurul Absar Shadik**  
-GitHub: [@failuresoul](https://github.com/failuresoul)
+- GitHub: [@failuresoul](https://github.com/failuresoul)
+- Repository: [github.com/failuresoul/To-Do-App](https://github.com/failuresoul/To-Do-App)

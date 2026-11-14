@@ -8,17 +8,23 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var authViewModel: AuthViewModel
+
     var body: some View {
-        VStack {
-            Image(systemName: "checklist")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("TodoFirebaseApp")
+        Group {
+            if authViewModel.userSession != nil {
+                TaskListView()
+                    .transition(.opacity)
+            } else {
+                LoginView()
+                    .transition(.opacity)
+            }
         }
-        .padding()
+        .animation(.easeInOut(duration: 0.25), value: authViewModel.userSession != nil)
     }
 }
 
 #Preview {
     ContentView()
+        .environmentObject(AuthViewModel())
 }

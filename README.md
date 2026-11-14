@@ -33,51 +33,9 @@ Every task is tied to the logged-in user's unique Firebase `uid`, ensuring that 
 
 The project uses the **MVVM (Model–View–ViewModel)** architecture combined with a dedicated **Service Layer** and **Firebase Cloud Backend**. This keeps the user interface clean and separates UI code from Firebase database logic.
 
-### Visual Architecture Overview
-
 <p align="center">
   <img src="docs/images/architecture-banner.jpg" width="100%" alt="TodoFirebaseApp System Architecture Banner" />
 </p>
-
-### Detailed Layer Diagram
-
-<p align="center">
-  <img src="docs/images/architecture-diagram.svg" width="100%" alt="TodoFirebaseApp Detailed Architecture Diagram" />
-</p>
-
-### Data Flow Diagram
-
-```mermaid
-flowchart LR
-    subgraph View["1. View Layer (SwiftUI)"]
-        App["TodoFirebaseAppApp"] --> Content["ContentView"]
-        Content -->|Logged Out| AuthViews["LoginView / SignUpView"]
-        Content -->|Logged In| TaskViews["TaskListView / TaskRowView / AddEditTaskView"]
-    end
-
-    subgraph ViewModel["2. ViewModel Layer"]
-        AuthVM["AuthViewModel"]
-        TaskVM["TaskViewModel"]
-    end
-
-    subgraph Service["3. Service & Model Layer"]
-        TS["TaskService"]
-        Model["TodoItem Model"]
-    end
-
-    subgraph Firebase["4. Firebase Cloud"]
-        FA["Firebase Auth"]
-        FS["Cloud Firestore"]
-    end
-
-    AuthViews <--> AuthVM
-    TaskViews <--> TaskVM
-    AuthVM <--> FA
-    AuthVM -->|Create User Profile| FS
-    TaskVM <--> TS
-    TS --> Model
-    TS <-->|Real-Time Listener & CRUD| FS
-```
 
 ---
 

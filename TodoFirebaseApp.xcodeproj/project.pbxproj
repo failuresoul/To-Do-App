@@ -15,12 +15,15 @@
 		A10000060000000000000001 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000060000000000000001 /* LoginView.swift */; };
 		A10000070000000000000001 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000070000000000000001 /* SignUpView.swift */; };
 		A10000080000000000000001 /* TaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000080000000000000001 /* TaskListView.swift */; };
+		A10000090000000000000001 /* TaskRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000090000000000000001 /* TaskRowView.swift */; };
+		A100000A0000000000000001 /* AddEditTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000A0000000000000001 /* AddEditTaskView.swift */; };
 		A100000B0000000000000001 /* TaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000B0000000000000001 /* TaskService.swift */; };
 		A100000D0000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A200000D0000000000000001 /* Assets.xcassets */; };
 		A100000E0000000000000001 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A200000E0000000000000001 /* Preview Assets.xcassets */; };
 		A100000F0000000000000001 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A200000F0000000000000001 /* GoogleService-Info.plist */; };
 		A10000100000000000000001 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A90000010000000000000001 /* FirebaseAuth */; };
 		A10000110000000000000001 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = A90000020000000000000001 /* FirebaseFirestore */; };
+		A10000120000000000000001 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = A90000030000000000000001 /* FirebaseCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +36,8 @@
 		A20000060000000000000001 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		A20000070000000000000001 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		A20000080000000000000001 /* TaskListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListView.swift; sourceTree = "<group>"; };
+		A20000090000000000000001 /* TaskRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRowView.swift; sourceTree = "<group>"; };
+		A200000A0000000000000001 /* AddEditTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditTaskView.swift; sourceTree = "<group>"; };
 		A200000B0000000000000001 /* TaskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskService.swift; sourceTree = "<group>"; };
 		A200000D0000000000000001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A200000E0000000000000001 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -44,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10000120000000000000001 /* FirebaseCore in Frameworks */,
 				A10000100000000000000001 /* FirebaseAuth in Frameworks */,
 				A10000110000000000000001 /* FirebaseFirestore in Frameworks */,
 			);
@@ -123,6 +129,8 @@
 			isa = PBXGroup;
 			children = (
 				A20000080000000000000001 /* TaskListView.swift */,
+				A20000090000000000000001 /* TaskRowView.swift */,
+				A200000A0000000000000001 /* AddEditTaskView.swift */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -168,6 +176,7 @@
 			);
 			name = TodoFirebaseApp;
 			packageProductDependencies = (
+				A90000030000000000000001 /* FirebaseCore */,
 				A90000010000000000000001 /* FirebaseAuth */,
 				A90000020000000000000001 /* FirebaseFirestore */,
 			);
@@ -237,6 +246,8 @@
 				A10000060000000000000001 /* LoginView.swift in Sources */,
 				A10000070000000000000001 /* SignUpView.swift in Sources */,
 				A10000080000000000000001 /* TaskListView.swift in Sources */,
+				A10000090000000000000001 /* TaskRowView.swift in Sources */,
+				A100000A0000000000000001 /* AddEditTaskView.swift in Sources */,
 				A100000B0000000000000001 /* TaskService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -463,6 +474,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A80000010000000000000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		A90000030000000000000001 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A80000010000000000000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

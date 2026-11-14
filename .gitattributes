@@ -1,0 +1,6 @@
+# Keep Unix line endings so Xcode on macOS reads every file correctly,
+# even when the repo is edited or committed from Windows.
+* text=auto eol=lf
+*.pbxproj text eol=lf merge=union
+*.png binary
+*.jpg binary

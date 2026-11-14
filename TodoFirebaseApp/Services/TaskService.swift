@@ -46,9 +46,9 @@ final class TaskService {
 
         removeListener()
 
+        // Sorted on the client so no composite Firestore index is required.
         listenerRegistration = db.collection(collectionName)
             .whereField("userId", isEqualTo: uid)
-            .order(by: "createdAt", descending: true)
             .addSnapshotListener { snapshot, error in
                 if let error = error {
                     completion(.failure(error))
@@ -60,9 +60,11 @@ final class TaskService {
                     return
                 }
 
-                let tasks = documents.compactMap { document -> TodoItem? in
-                    try? document.data(as: TodoItem.self)
-                }
+                let tasks = documents
+                    .compactMap { document -> TodoItem? in
+                        try? document.data(as: TodoItem.self)
+                    }
+                    .sorted { $0.createdAt > $1.createdAt }
                 completion(.success(tasks))
             }
     }
